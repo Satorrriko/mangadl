@@ -179,29 +179,6 @@ def get_chapter_list(name):
     chapter_list = r.json()['results']
     return json.loads(aes_decode(chapter_list))
 
-def get_page_list(name, id):
-    url = 'https://api.copymanga.site/api/v3/comic/' + name + '/chapter/' + id
-    res = requests.get(url).json()
-    return res['results']['comic']['name'], res['results']['chapter']['contents']
-    
-def download_chapter(name, chapter, page_list):
-    page = 1
-    for img in page_list:
-        thread = threading.Thread(target=download, args=(img['url'], name, chapter, page))
-        thread.start()
-        thread.join()
-        page += 1
-    
-def download(imgurl, name, chapter, page):
-    r = requests.get(imgurl)
-    if os.path.isdir('./' + name+ '/' + chapter):
-        pass
-    else:
-        os.makedirs('./' + name+ '/' + chapter)
-    with open(name + '/' + chapter + '/' + str(page).zfill(4) + '.jpg', 'wb') as f:
-        f.write(r.content)
-        f.close()
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()
