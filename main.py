@@ -20,21 +20,6 @@ import json
 import threading
 import os
 
-# -*- coding: utf-8 -*-
-
-################################################################################
-## Form generated from reading UI file 'designerTqknrb.ui'
-##
-## Created by: Qt User Interface Compiler version 5.15.2
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
-
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -92,8 +77,6 @@ class Ui_MainWindow(object):
         self.label.setText("")
     # retranslateUi
 
-
-
     def ui_get_chapter(self):
         type_list = {
             1: '话',
@@ -106,18 +89,15 @@ class Ui_MainWindow(object):
         model = QStandardItemModel()
         model.setHorizontalHeaderLabels(['Type', 'Title', 'ID'])
         for chapter in self.chapter_list['groups']['default']['chapters']:
-            # print(chapter)
             item = QStandardItem(type_list[chapter['type']])
             item2 = QStandardItem(chapter['name'])
             item3 = QStandardItem(chapter['id'])
             model.appendRow([item, item2, item3])
-            # item3 add to tableview
         self.tableView.setModel(model)
         self.tableView.resizeColumnsToContents()
         self.tableView.resizeRowsToContents()
 
     def ui_set_dltable(self):
-        # print('ui_set_dltable')
         dl_type = self.comboBox.currentIndex()
         model = QStandardItemModel()
         model.setHorizontalHeaderLabels(['Type', 'Page', 'Progress', 'Links'])
@@ -128,10 +108,8 @@ class Ui_MainWindow(object):
                 QApplication.processEvents()
                 self.label.setText('Getting chapter ' + chapter['name'] + '...')
                 thread = threading.Thread(target=self.get_page_list, args=(self.name, chapter, model))
-                # self.fname, self.page_list = get_page_list(self.name, chapter['id'])
                 thread.start()
-                
-                
+                   
         thread.join()
         
         self.tableView_2.setModel(model)
@@ -145,11 +123,7 @@ class Ui_MainWindow(object):
         item4 = QStandardItem(json.dumps(res['results']['chapter']['contents']))
         model.appendRow([item, item2, QStandardItem('0'), item4])
         self.fname = res['results']['comic']['name']
-        # return res['results']['comic']['name'], res['results']['chapter']['contents']            
     def ui_download_chapter(self):
-        # print("download_chapter")
-        # get tableview2 content
-        # get tableview2 content
         model = self.tableView_2.model()
         for row in range(model.rowCount()):
             item1 = model.item(row, 0).text()
@@ -159,9 +133,7 @@ class Ui_MainWindow(object):
                 pass
             else:
                 os.makedirs('./' + self.fname + '/' + item1)
-            # threading.Thread(target=self.download_chapter, args=(self.fname, item1, url)).start()
             self.download_chapter(self.fname, item1, url)
-            # download_chapter(name = self.fname, chapter = item1, page_list = url)
     def download_chapter(self, name, chapter, page_list):
         page = 1
         for img in page_list:
@@ -173,7 +145,6 @@ class Ui_MainWindow(object):
         thread.join()
 
     def download(self, url, name, chapter, page):
-        # print(url)
         r = requests.get(url, stream=True)
         if os.path.isdir('./' + name+ '/' + chapter):
             pass
